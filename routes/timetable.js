@@ -28,7 +28,7 @@ router.post("/createEntry", async (req, res) => {
     res.status(500).send("Internal server error");
   }
 });
-//ROUTE2:Fetch all details of a TimeTable Entity using : POST "/api/timeEntry/getAllDetails".
+//ROUTE2:Fetch all details of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails".
 router.get("/getAllDetails", async (req, res) => {
   try {
     const time_entry = await TimeTableEntity.find()
@@ -40,7 +40,7 @@ router.get("/getAllDetails", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-//ROUTE3:Fetch all details by user_id of a TimeTable Entity using : POST "/api/timeEntry/getAllDetails/:user_id" and with the help of query parameter we can filter date start and end .
+//ROUTE3:Fetch all details by user_id of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails/:user_id" and with the help of query parameter we can filter date start and end .
 router.get("/getAllDetails/:user_id", async (req, res) => {
   try {
       user_id = req.params.user_id;

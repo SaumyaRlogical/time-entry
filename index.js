@@ -6,7 +6,7 @@ var cors = require("cors");
 const jwt = process.env.JWT_KEY;
 
 const app = express();
-const port = 5000;
+const port = 6000;
 connectToMongo();
 app.use(cors());
 app.use(express.json());
