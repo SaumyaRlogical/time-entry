@@ -15,7 +15,6 @@ app.use("/api/user", require("./routes/user"));
 app.use("/api/project",require("./routes/project"))
 app.use("/api/timeEntry",require("./routes/timetable"))
 app.listen(port, () => {
-  console.log(`Crud Operation Endpoints listening at http://localhost:${port}`);
+  console.log(`Time-Entry Endpoints listening at http://localhost:${port}`);
   console.log(jwt);
 });
-//console.log(""""""------------------------------------hello---------------------------------------"""""");

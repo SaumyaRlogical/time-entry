@@ -1,32 +1,44 @@
 const express = require("express");
 const User = require("../models/User");
-
+const { body, validationResult } = require("express-validator");
 const router = express.Router();
- 
+const bycrypt = require("bcryptjs");
 
 
 
-//ROUTE1:Create a User using : POST "/api/auth/createUser".
+//Route 1:Create a User using : POST "/api/user/createUser".
 router.post(
   "/createUser",
+  [
+    body("name", "Enter a valid name").isLength({ min: 3 }),
+    body("email", "Enter a valid email").isEmail(),
+    body("password", "Password must be atleast 5 characters").isLength({
+      min: 5,
+    }),
+  ],
   async (req, res) => {
 
     let success = false;
-
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success, errors: errors.array() });
+    }
     //Check whether the user with this email exists or not
     try {
       let user = await User.findOne({ email: req.body.email });
+      
       if (user) {
         return res
           .status(400)
           .json({ success, error: "Sorry a user with this already exists" });
       }
-
+      const salt = await bycrypt.genSalt(10);
+      secPass = await bycrypt.hash(req.body.password, salt);
       //Create a new user
       user = await User.create({
         name: req.body.name,
         email: req.body.email,
-        password: req.body.password,
+        password: secPass,
       });
       const data = {
         user: {
@@ -41,7 +53,7 @@ router.post(
     }
   }
 );
-// Route 2: Create endpoint to get all users details using : "api/auth/getUsers" 
+// Route 2: Create endpoint to get all users details using : "api/user/getUsers" 
 router.get("/getUsers", async ( req,res) => {
   try {
 
@@ -52,16 +64,18 @@ router.get("/getUsers", async ( req,res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-//Route 3: Create enpoint to update user details using : PUT "/api/auth/updateUser/:userId"
+//Route 3: Create enpoint to update user details using : PUT "/api/user/updateUser/:userId"
 router.put("/updateUser/:userId", async (req, res) => {
   try {
+    const salt = await bycrypt.genSalt(10);
+    secPass = await bycrypt.hash(req.body.password, salt);
     userId = req.params.userId;
     console.log(userId)
     const user = await User.findById(userId);
     user.name= req.body.name,
     user.email= req.body.email,
-    user.password= req.body.password,
-  
+    user.password= secPass,
+    user.updatedDate=Date.now()
     user.save();
     res.send(user);
   } catch (error) {
@@ -70,7 +84,7 @@ router.put("/updateUser/:userId", async (req, res) => {
   }
 });
 
-//Route 4: Create An Endpoint to delete the user details using : DELETE "/api/auth/deleteUser/:userId"
+//Route 4: Create An Endpoint to delete the user details using : DELETE "/api/user/deleteUser/:userId"
 router.delete("/deleteUser/:userId", async ( req,res) => {
   try {
     userId=req.params.userId;
@@ -82,6 +96,49 @@ router.delete("/deleteUser/:userId", async ( req,res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+//Route 5:Authenticate a User using : POST "/api/user/login".
+router.post(
+  "/login",
+  [
+    body("email", "Enter a valid email").isEmail(),
+    body("password", "Password cannot be blank").exists(),
+  ],
+  async (req, res) => {
+    // If there are errors, return bad requests and the errors
+    let success = false;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+      let user = await User.findOne({ email });
+      if (!user) {
+        return res
+          .status(400)
+          .json({ error: "Please try to login with correct credentials" });
+      }
+      const passwordCompare = await bycrypt.compare(password, user.password);
+      if (!passwordCompare) {
+        success = false;
+        return res.status(400).json({
+          success,
+          error: "Please try to login with correct credentials",
+        });
+      }
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      success = true;
+      res.json({ success });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal server error");
+    }
+  }
+);
 /* router.get("/countProducts/:city", async ( req,res) => {
   try {
     city=req.params.city;
