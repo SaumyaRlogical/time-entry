@@ -13,7 +13,7 @@ router.post("/createEntry", async (req, res) => {
       hours: req.body.hours,
       project_id: req.body.project_id,
       user_id: req.body.user_id,
-      extraHours: req.body.extraHours
+      extraHours: req.body.extraHours,
     });
 
     const data = {
@@ -29,7 +29,7 @@ router.post("/createEntry", async (req, res) => {
   }
 });
 //ROUTE2:Fetch all details of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails".
-router.get("/getAllDetails", async (req, res) => {
+router.get("/getAllDetails", async (res) => {
   try {
     const time_entry = await TimeTableEntity.find()
       .populate({ path: "user_id", select: "name" })
@@ -46,10 +46,13 @@ router.get("/getAllDetails/:user_id", async (req, res) => {
     user_id = req.params.user_id;
     console.log("User id ", user_id);
 
-    const count = req.query.sdate || req.query.edate ? await TimeTableEntity.find({
-      user_id: user_id,
-      createdDate: { $gte: req.query.sdate, $lte: req.query.edate },
-    }) : await TimeTableEntity.find({ user_id: user_id });
+    const count =
+      req.query.sdate || req.query.edate
+        ? await TimeTableEntity.find({
+            user_id: user_id,
+            createdDate: { $gte: req.query.sdate, $lte: req.query.edate },
+          })
+        : await TimeTableEntity.find({ user_id: user_id });
     let totalHours = 0;
     for (let index = 0; index < count.length; index++) {
       const hours = count[index].hours;
