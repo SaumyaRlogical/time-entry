@@ -12,6 +12,7 @@ app.use(express.json());
 app.use("/api/user", require("./routes/user"));
 app.use("/api/project",require("./routes/project"))
 app.use("/api/timeEntry",require("./routes/timetable"))
+app.use("/api/leaveEntry",require("./routes/leaveManagement"))
 app.listen(port, () => {
   console.log(`Time-Entry Endpoints listening at http://localhost:${port}`);
 });
