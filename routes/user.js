@@ -73,6 +73,16 @@ router.get("/getUsers", async ( req,res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+router.get("/getUsersByManager", async ( req,res) => {
+  try {
+    console.log("hi")
+    const user = await User.find({ designation: 'Manager' });
+    res.send({user});
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 //Route 3: Create enpoint to update user details using : PUT "/api/user/updateUser/:userId"
 router.put("/updateUser/:userId", async (req, res) => {
   try {

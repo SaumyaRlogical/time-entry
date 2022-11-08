@@ -10,7 +10,7 @@ const TimeEntrySchema = new Schema({
         required:true,
     },
     hours:{
-        type:Number,
+        type:Array,
     },
     createdDate: {
         type: Date,
