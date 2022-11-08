@@ -1,33 +1,45 @@
 const express = require("express");
+const { body, validationResult } = require("express-validator");
 const TimeTableEntity = require("../models/TimeEntryEntity");
 
 const router = express.Router();
 
 //ROUTE1:Create a TimeTable Entity using : POST "/api/timeEntry/createEntry".
-router.post("/createEntry", async (req, res) => {
-  let success = false;
-  try {
-    //Create a new timetable
-    time_entry = await TimeTableEntity.create({
-      description: req.body.description,
-      hours: req.body.hours,
-      project_id: req.body.project_id,
-      user_id: req.body.user_id,
-      extraHours: req.body.extraHours,
-    });
+router.post(
+  "/createEntry",
+  [
+    body("description", "Enter description").isString(),
+    body("hours", "Enter hours in number").isNumeric(),
+  ],
+  async (req, res) => {
+    let success = false;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success, errors: errors.array() });
+    }
+    try {
+      //Create a new timetable
+      time_entry = await TimeTableEntity.create({
+        description: req.body.description,
+        hours: req.body.hours,
+        project_id: req.body.project_id,
+        user_id: req.body.user_id,
+        extraHours: req.body.extraHours,
+      });
 
-    const data = {
-      time_entry: {
-        id: time_entry.id,
-      },
-    };
-    success = true;
-    res.json({ success });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Internal server error");
+      const data = {
+        time_entry: {
+          id: time_entry.id,
+        },
+      };
+      success = true;
+      res.json({ success });
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send("Internal server error");
+    }
   }
-});
+);
 //ROUTE2:Fetch all details of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails".
 router.get("/getAllDetails", async (res) => {
   try {
