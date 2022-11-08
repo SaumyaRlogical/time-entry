@@ -148,7 +148,7 @@ router.post(
     }
   }
 );
-// Route 2: Create endpoint to get all users details using : "api/user/getUsers" 
+// Route 6: Create endpoint to get all users details using : "api/user/getUsersByDOB"  for filtering by month 
 router.get("/getUsersByDOB", async ( req,res) => {
   try {
 
