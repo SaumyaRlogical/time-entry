@@ -13,6 +13,10 @@ const LeaveManagementSchema = new Schema({
         type:String,
         required:true
     },
+    leaveRequestSendTo:{
+        type:String,
+        required:true
+    },
     createdDate: {
         type: Date,
         default: Date.now,
@@ -27,6 +31,7 @@ const LeaveManagementSchema = new Schema({
         enum: ['Casual Leave', 'Emergency Leave','Sick Leave'],
         required:true
     },
+    
     status: {
         type: String,
         enum: ['Pending', 'Approved','Rejected','Cancelled'],

@@ -6,7 +6,8 @@ const router = express.Router();
 //ROUTE1:Create a Leave Entry Entity using : POST "/api/leaveEntry/createEntry".
 router.post("/createLeaveEntry",[
     body("leaveType","Must be Valid enum value leave Type").isIn(['Full Day', 'First half day','Second half day']),
-    body("leaveReason","Must be Valid enum value for Leave Reason type").isIn(['Casual Leave', 'Emergency Leave','Sick Leave'])
+    body("leaveReason","Must be Valid enum value for Leave Reason type").isIn(['Casual Leave', 'Emergency Leave','Sick Leave']),
+    body("leaveRequestSendTo","Enter a valid email").isEmail()
 ], async (req, res) => {
   let success = false;
   const errors = validationResult(req);
@@ -21,6 +22,7 @@ router.post("/createLeaveEntry",[
       description: req.body.description,
       leaveType: req.body.leaveType,
       leaveReason: req.body.leaveReason,
+      leaveRequestSendTo:req.body.leaveRequestSendTo,
       userId: req.body.userId,
     });
 
@@ -82,7 +84,16 @@ router.get("/getByUserId/:userId",async(req,res)=>{
     }
 })
 //ROUTE5:Update the details for leave :Put "/api/leaveEntry/updateLeave/:id"
-router.put("/updateLeave/:id", async (req, res) => {
+router.put("/updateLeave/:id", [
+    body("leaveType","Must be Valid enum value leave Type").isIn(['Full Day', 'First half day','Second half day']),
+    body("leaveReason","Must be Valid enum value for Leave Reason type").isIn(['Casual Leave', 'Emergency Leave','Sick Leave']),
+    body("leaveRequestSendTo","Enter a valid email").isEmail()
+],async (req, res) => {
+    let success = false;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success, errors: errors.array() });
+    }
     try {
       id = req.params.id;
       console.log(userId)
@@ -92,6 +103,7 @@ router.put("/updateLeave/:id", async (req, res) => {
       data.description=req.body.description;
       data.leaveType=req.body.leaveType;
       data.leaveReason=req.body.leaveReason;
+      data.leaveRequestSendTo=req.leaveRequestSendTo
       data.save();
       res.send(data);
     } catch (error) {

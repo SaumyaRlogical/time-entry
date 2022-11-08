@@ -18,11 +18,13 @@ const TimeEntrySchema = new Schema({
     },
     project_id:[{
         type:mongoose.SchemaTypes.ObjectId,
-        ref:'project'
+        ref:'project',
+        required:true,
     }],
     user_id:{
         type:mongoose.SchemaTypes.ObjectId,
-        ref:'user'
+        ref:'user',
+        required:true,
     }
 });
 const TimeTableEntity = mongoose.model("time-table", TimeEntrySchema);
