@@ -19,6 +19,19 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
+  dob:{
+    
+    type:Date,
+    required: true,
+  },
+  department:{
+    type:String,
+    required: true,
+  },
+  designation:{
+    type:String,
+    required: true,
+  },
   updatedDate:{
     type:Date,
     default:Date.now
