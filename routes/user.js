@@ -15,6 +15,11 @@ router.post(
     body("password", "Password must be atleast 5 characters").isLength({
       min: 5,
     }),
+    body("dob","Date should be in valid form like 'yyyy-mm-dd'").isDate({
+      format:'yyyy-mm-dd'
+    }),
+    body("department","Enter Department").isString(),
+    body("designation","Enter Designation").isString(),
   ],
   async (req, res) => {
 
@@ -34,11 +39,15 @@ router.post(
       }
       const salt = await bycrypt.genSalt(10);
       secPass = await bycrypt.hash(req.body.password, salt);
+      //const dateOfBirth=req.body.dob.toISOString()
       //Create a new user
       user = await User.create({
         name: req.body.name,
         email: req.body.email,
         password: secPass,
+        dob:new Date(req.body.dob),
+        department:req.body.department,
+        designation:req.body.designation,
       });
       const data = {
         user: {
@@ -139,6 +148,20 @@ router.post(
     }
   }
 );
+// Route 6: Create endpoint to get all users details using : "api/user/getUsersByDOB"  for filtering by month 
+router.get("/getUsersByDOB", async ( req,res) => {
+  try {
+
+  const user=await User.aggregate([
+    {$project: {name: 1, dob:2,department:3,month: {$month: '$dob'}}},
+    {$match: {month: parseInt(req.query.month)}}
+  ]);
+    res.send({user});
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 /* router.get("/countProducts/:city", async ( req,res) => {
   try {
     city=req.params.city;
