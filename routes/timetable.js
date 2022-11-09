@@ -41,7 +41,7 @@ router.post(
   }
 );
 //ROUTE2:Fetch all details of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails".
-router.get("/getAllDetails", async (res) => {
+router.get("/getAllDetails", async (req, res) => {
   try {
     const time_entry = await TimeTableEntity.find()
       .populate({ path: "user_id", select: "name" })
