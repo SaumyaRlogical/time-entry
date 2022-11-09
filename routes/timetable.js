@@ -54,7 +54,7 @@ router.get("/getAllDetails", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-//ROUTE3:Fetch all details by user_id of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails/:user_id" and with the help of query parameter we can filter date start and end .
+//ROUTE3:Fetch all details by user_id of a TimeTable Entity using : GET "/api/timeEntry/getAllDetails/:user_id" and with the help of query parameter we can filter date start and end.
 router.get("/getAllDetails/:user_id", async (req, res) => {
   try {
     user_id = req.params.user_id;
