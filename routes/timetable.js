@@ -8,8 +8,10 @@ const router = express.Router();
 router.post(
   "/createEntry",
   [
+    body("project_id", "Enter valid project_id").isArray(),
+    body("user_id", "Enter valid user_id").isString(),
     body("description", "Enter description").isString(),
-    body("hours", "Enter hours in number").isNumeric(),
+    body("hours", "Enter hours in number").isNumeric().isArray(),
   ],
   async (req, res) => {
     let success = false;

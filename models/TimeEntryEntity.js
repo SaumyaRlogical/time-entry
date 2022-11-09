@@ -27,7 +27,7 @@ const TimeEntrySchema = new Schema({
   user_id: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: "user",
-    //        required:true,
+    required: true,
   },
 });
 const TimeTableEntity = mongoose.model("time-table", TimeEntrySchema);
