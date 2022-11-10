@@ -1,5 +1,5 @@
 const express = require("express");
-const { body, validationResult } = require("express-validator");
+const { body, check, validationResult } = require("express-validator");
 const TimeTableEntity = require("../models/TimeEntryEntity");
 
 const router = express.Router();
@@ -7,12 +7,12 @@ const router = express.Router();
 //ROUTE1:Create a TimeTable Entity using : POST "/api/timeEntry/createEntry".
 router.post(
   "/createEntry",
-  /*   [
-    body("project_id", "Enter valid project_id").isArray(),
-    body("user_id", "Enter valid user_id").isString(),
-    body("description", "Enter description").isString(),
-    body("hours", "Enter hours in number").isNumeric(),
-  ], */
+  [
+    body("days.*.project_id", "Enter valid project_id").exists(),
+    body("days.*.user_id", "Enter valid user_id").exists(),
+    body("days.*.description", "Enter valid description").isString(),
+    body("days.*.hours", "Enter valid number ").isNumeric(),
+  ],
   async (req, res) => {
     let success = false;
     const errors = validationResult(req);
