@@ -7,12 +7,12 @@ const router = express.Router();
 //ROUTE1:Create a TimeTable Entity using : POST "/api/timeEntry/createEntry".
 router.post(
   "/createEntry",
-  [
+  /*   [
     body("project_id", "Enter valid project_id").isArray(),
     body("user_id", "Enter valid user_id").isString(),
     body("description", "Enter description").isString(),
-    body("hours", "Enter hours in number").isNumeric().isArray(),
-  ],
+    body("hours", "Enter hours in number").isNumeric(),
+  ], */
   async (req, res) => {
     let success = false;
     const errors = validationResult(req);
@@ -21,13 +21,8 @@ router.post(
     }
     try {
       //Create a new timetable
-      time_entry = await TimeTableEntity.create({
-        description: req.body.description,
-        hours: req.body.hours,
-        project_id: req.body.project_id,
-        user_id: req.body.user_id,
-        extraHours: req.body.extraHours,
-      });
+      time_entry = await TimeTableEntity.create({ days: req.body.days });
+      console.log(time_entry.days, "Hi");
 
       const data = {
         time_entry: {
@@ -46,8 +41,8 @@ router.post(
 router.get("/getAllDetails", async (req, res) => {
   try {
     const time_entry = await TimeTableEntity.find()
-      .populate({ path: "user_id", select: "name" })
-      .populate({ path: "project_id" });
+      .populate({ path: "days.user_id", select: "name" })
+      .populate({ path: "days.project_id" });
     res.send({ time_entry });
   } catch (error) {
     console.log(error.message);
@@ -68,11 +63,13 @@ router.get("/getAllDetails/:user_id", async (req, res) => {
           })
         : await TimeTableEntity.find({ user_id: user_id });
     let totalHours = 0;
-    for (let index = 0; index < count.length; index++) {
-      const hours = count[index].hours;
-      for (let j = 0; j < hours.length; j++) {
+    console.log(count.days);
+    for (let index = 0; index < count.days.length; index++) {
+      const hours = count.days[index].hours;
+      console.log(hours, "hours");
+      /*     for (let j = 0; j < hours.length; j++) {
         totalHours += hours[j];
-      }
+      } */
     }
     res.send({ count, totalHours });
   } catch (error) {
