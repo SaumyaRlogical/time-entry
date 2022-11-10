@@ -21,8 +21,7 @@ router.post(
     }
     try {
       //Create a new timetable
-      time_entry = await TimeTableEntity.create({ days: req.body.days });
-      console.log(time_entry.days, "Hi");
+      time_entry = await TimeTableEntity.insertMany(req.body.days);
 
       const data = {
         time_entry: {
@@ -41,8 +40,8 @@ router.post(
 router.get("/getAllDetails", async (req, res) => {
   try {
     const time_entry = await TimeTableEntity.find()
-      .populate({ path: "days.user_id", select: "name" })
-      .populate({ path: "days.project_id" });
+      .populate({ path: "user_id", select: "name" })
+      .populate({ path: "project_id" });
     res.send({ time_entry });
   } catch (error) {
     console.log(error.message);
@@ -63,13 +62,10 @@ router.get("/getAllDetails/:user_id", async (req, res) => {
           })
         : await TimeTableEntity.find({ user_id: user_id });
     let totalHours = 0;
-    console.log(count.days);
-    for (let index = 0; index < count.days.length; index++) {
-      const hours = count.days[index].hours;
-      console.log(hours, "hours");
-      /*     for (let j = 0; j < hours.length; j++) {
-        totalHours += hours[j];
-      } */
+
+    for (let index = 0; index < count.length; index++) {
+      const hours = count[index].hours;
+      totalHours += hours;
     }
     res.send({ count, totalHours });
   } catch (error) {
