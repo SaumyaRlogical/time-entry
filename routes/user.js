@@ -86,10 +86,17 @@ router.put("/updateUser/:userId", async (req, res) => {
     userId = req.params.userId;
     console.log(userId);
     const user = await User.findById(userId);
-    (user.name = req.body.name),
-      (user.email = req.body.email),
-      (user.password = secPass),
-      (user.updatedDate = Date.now());
+    let user1 = await User.findOne({ email: req.body.email });
+
+    if (user1) {
+      return res
+        .status(400)
+        .json({ error: "Sorry a user with this already exists" });
+    }
+    user.name = req.body.name;
+    user.email = req.body.email;
+    user.password = secPass;
+    user.updatedDate = Date.now();
     user.save();
     res.send(user);
   } catch (error) {
