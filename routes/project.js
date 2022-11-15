@@ -22,6 +22,7 @@ router.post("/createProject", async (req, res) => {
 router.get("/getProject", async (req, res) => {
   try {
     const project = await ProjectsEntity.find();
+    console.log(project);
     res.send(project);
   } catch (error) {
     console.log(error.message);

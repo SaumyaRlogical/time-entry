@@ -29,7 +29,8 @@ router.post(
         },
       };
       success = true;
-      res.json({ success });
+      console.log(time_entry);
+      res.json({ success, message: "You had successfully entered the data" });
     } catch (error) {
       console.error(error.message);
       res.status(500).send("Internal server error");
