@@ -74,5 +74,18 @@ router.get("/getAllDetails/:user_id", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
+// Route 4: Update a TimeTable Entity using : PUT "/api/timeEntry/updateEntry/:userId".
+router.put("/updateEntry/:user_id", async (req, res) => {
+  try {
+    const time_entry = await TimeTableEntity.findOneAndUpdate(
+      { user_id: req.params.user_id },
+      req.body,
+      { new: true }
+    );
+    res.send({ time_entry });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).send("Internal Server Error");
+  }
+});
 module.exports = router;

@@ -24,6 +24,13 @@ router.get("/getProject", async (req, res) => {
     const project = await ProjectsEntity.find();
     console.log(project);
     res.send(project);
+    const array = [1, 2, 3];
+    /*    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      let user = 5;
+      console.log(element);
+    }
+    console.log("User", user); */
   } catch (error) {
     console.log(error.message);
     res.status(500).send("Internal Server Error");

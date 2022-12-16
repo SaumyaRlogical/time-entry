@@ -26,15 +26,24 @@ router.post(
       return res.status(400).json({ success, errors: errors.array() });
     }
     try {
+      const {
+        startDate,
+        endDate,
+        description,
+        leaveType,
+        leaveReason,
+        leaveRequestSendTo,
+        userId,
+      } = req.body;
       //Create a new leave entry
       leave_entry = await LeaveManagementEntity.create({
-        startDate: req.body.startDate,
-        endDate: req.body.endDate,
-        description: req.body.description,
-        leaveType: req.body.leaveType,
-        leaveReason: req.body.leaveReason,
-        leaveRequestSendTo: req.body.leaveRequestSendTo,
-        userId: req.body.userId,
+        startDate,
+        endDate,
+        description,
+        leaveType,
+        leaveReason,
+        leaveRequestSendTo,
+        userId,
       });
 
       const data = {
